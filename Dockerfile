@@ -5,13 +5,14 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libpq-dev \
     zip \
     unzip \
     git \
     curl
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql gd
+# Install PHP extensions (termasuk PostgreSQL & GD)
+RUN docker-php-ext-install pdo pdo_pgsql gd
 
 # Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
