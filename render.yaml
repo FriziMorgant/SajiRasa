@@ -1,13 +1,13 @@
 services:
   - type: web
-     name: sajirasa
-     runtime: php
-     region: singapore
-     plan: free
-     buildCommand: "composer install --optimize-autoloader --no-dev && npm install && npm run build"
-     startCommand: "php artisan migrate --force && apache2-foreground"
-     envVars:
-       - key: APP_ENV
-         value: production
-       - key: APP_DEBUG
-         value: true
+    name: sajirasa
+    runtime: php
+    region: singapore
+    plan: free
+    buildCommand: "composer install --optimize-autoloader --no-dev && npm install && npm run build"
+    startCommand: "php artisan migrate --force && apache2-foreground"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: true
