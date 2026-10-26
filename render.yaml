@@ -1,10 +1,11 @@
 services:
   - type: web
     name: sajirasa
-    env: docker
+    runtime: php
     region: singapore
     plan: free
-    buildCommand: "docker build -t sajirasa ."
+    buildCommand: "composer install --optimize-autoloader --no-dev && npm install && npm run build"
+    startCommand: "php artisan migrate --force && apache2-foreground"
     envVars:
       - key: APP_ENV
         value: production
