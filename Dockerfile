@@ -31,13 +31,9 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Point Apache document root to Laravel public folder
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
-RUN sed -i 's!/var/www!/var/www/html/public!g' /etc/apache2/apache2.conf
+RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 
 # Set permissions for storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Bersihkan cache konfigurasi saat proses build Docker
-RUN php artisan config:clear
-RUN php artisan cache:clear
 
 EXPOSE 80
