@@ -36,4 +36,13 @@ RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 # Set permissions for storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Buat file entrypoint untuk menjalankan migrasi otomatis saat container start
+RUN echo '#!/bin/bash' > /entrypoint.sh \
+    && echo 'php artisan config:clear' >> /entrypoint.sh \
+    && echo 'php artisan migrate --force' >> /entrypoint.sh \
+    && echo 'apache2-foreground' >> /entrypoint.sh \
+    && chmod +x /entrypoint.sh
+
 EXPOSE 80
+
+CMD ["/entrypoint.sh"]
