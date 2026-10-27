@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# 1. Install sistem dependensi yang dibutuhkan
+# 1. Install sistem dependensi
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -12,35 +12,30 @@ RUN apt-get update && apt-get install -y \
     curl \
     gnupg
 
-# 2. Install Node.js 20.x untuk kompilasi Vite (Tailwind CSS)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
-
-# 3. Install ekstensi PHP (PostgreSQL & GD untuk gambar)
+# 2. Install ekstensi PHP
 RUN docker-php-ext-install pdo pdo_pgsql gd
 
-# 4. Install Composer secara global
+# 3. Install Composer secara global
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 5. Aktifkan mod_rewrite Apache
+# 4. Aktifkan mod_rewrite Apache
 RUN a2enmod rewrite
 
-# 6. Set working directory
+# 5. Set working directory
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-# 7. Install dependencies PHP & Build asset Vite (Supaya CSS/Tampilan rapi)
+# 6. Install package PHP saja (tanpa npm build di server karena sudah dibuild di lokal)
 RUN composer install --no-dev --optimize-autoloader
-RUN npm install && npm run build
 
-# 8. Konfigurasi Apache Document Root agar langsung mengarah ke folder public/
+# 7. Konfigurasi Document Root Apache ke folder public/
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 
-# 9. Berikan hak akses penuh ke folder storage dan cache
+# 8. Berikan izin hak akses folder storage dan cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# 10. Buat entrypoint script untuk otomatis migrasi & seeder database saat menyala
+# 9. Buat entrypoint otomatis untuk migrasi & seeder
 RUN echo '#!/bin/bash' > /entrypoint.sh \
     && echo 'php artisan config:clear' >> /entrypoint.sh \
     && echo 'php artisan cache:clear' >> /entrypoint.sh \
