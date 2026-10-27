@@ -36,8 +36,4 @@ RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 # Set permissions for storage and cache
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Clear and cache configuration for production
-RUN php artisan config:clear
-RUN php artisan cache:clear
-
 EXPOSE 80
