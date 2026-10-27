@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install system dependencies, Composer, & Node.js (untuk Vite)
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -11,37 +11,32 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     gnupg
-    
-# Install Node.js 20.x untuk membina Vite assets
+
+# Install Node.js (untuk compile Vite assets)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Install PHP extensions (PostgreSQL & GD)
+# Install PHP extensions
 RUN docker-php-ext-install pdo pdo_pgsql gd
 
-# Install Composer globally
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
-# Set working directory
 WORKDIR /var/www/html
-
-# Copy project files
 COPY . /var/www/html
 
-# Install Laravel dependencies via Composer
+# Install package PHP & Node.js, lalu build Vite
 RUN composer install --no-dev --optimize-autoloader
-
-# Install Node modules and build Vite frontend assets
 RUN npm install && npm run build
 
-# Point Apache document root to Laravel public folder
+# Setting Apache document root ke folder public
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 RUN sed -i 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf
 
-# Set permissions for storage and cache
+# Permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
