@@ -73,7 +73,7 @@ class RecipeController extends Controller
     }
 
     /**
-     * Menyimpan resep baru ke database (mendukung File Upload & URL).
+     * Menyimpan resep baru ke database (mendukung Cloudinary Upload & URL).
      */
     public function store(Request $request)
     {
@@ -90,10 +90,12 @@ class RecipeController extends Controller
             'category_id'  => 'required|exists:categories,id',
         ]);
 
-        // Logika penentuan gambar (upload file atau pakai URL)
+        // Logika penentuan gambar (Upload ke Cloudinary, pakai URL, atau fallback default)
         $imagePath = 'https://upload.wikimedia.org/wikipedia/commons/2/23/Seblak_Bandung.jpg';
         if ($request->hasFile('image_file')) {
-            $imagePath = $request->file('image_file')->store('recipes', 'public');
+            // Mengirim file langsung ke Cloudinary
+            $uploadedFileUrl = $request->file('image_file')->storeOnCloudinary('sajirasa_recipes');
+            $imagePath = $uploadedFileUrl->getSecureUrl();
         } elseif ($request->filled('image_url')) {
             $imagePath = $request->image_url;
         }
@@ -113,7 +115,7 @@ class RecipeController extends Controller
             'views'        => 0,
         ]);
 
-        return redirect()->route('recipes.index')->with('success', 'Resep berhasil ditambahkan!');
+        return redirect()->route('recipes.index')->with('success', 'Resep berhasil ditambahkan dan disimpan dengan aman!');
     }
 
     /**
@@ -157,7 +159,9 @@ class RecipeController extends Controller
 
         $imagePath = $recipe->image;
         if ($request->hasFile('image_file')) {
-            $imagePath = $request->file('image_file')->store('recipes', 'public');
+            // Upload file gambar baru ke Cloudinary
+            $uploadedFileUrl = $request->file('image_file')->storeOnCloudinary('sajirasa_recipes');
+            $imagePath = $uploadedFileUrl->getSecureUrl();
         } elseif ($request->filled('image_url')) {
             $imagePath = $request->image_url;
         }
