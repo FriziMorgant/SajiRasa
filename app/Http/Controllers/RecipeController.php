@@ -74,7 +74,7 @@ class RecipeController extends Controller
     }
 
     /**
-     * Menyimpan resep baru ke database (mendukung Cloudinary HTTP API & URL).
+     * Menyimpan resep baru ke database (mendukung File Upload via Cloudinary & URL).
      */
     public function store(Request $request)
     {
@@ -91,6 +91,7 @@ class RecipeController extends Controller
             'category_id'  => 'required|exists:categories,id',
         ]);
 
+        // Logika penentuan gambar (Upload ke Cloudinary via HTTP API atau pakai URL)
         $imagePath = 'https://upload.wikimedia.org/wikipedia/commons/2/23/Seblak_Bandung.jpg';
         if ($request->hasFile('image_file')) {
             $file = $request->file('image_file');
@@ -133,7 +134,7 @@ class RecipeController extends Controller
             'views'        => 0,
         ]);
 
-        return redirect()->route('recipes.index')->with('success', 'Resep berhasil ditambahkan dan disimpan ke Cloudinary!');
+        return redirect()->route('recipes.index')->with('success', 'Resep berhasil ditambahkan!');
     }
 
     /**
