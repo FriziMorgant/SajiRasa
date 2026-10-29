@@ -7,7 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Http;
 
 class RecipeController extends Controller
 {
@@ -74,7 +74,7 @@ class RecipeController extends Controller
     }
 
     /**
-     * Menyimpan resep baru ke database (mendukung Cloudinary Facade Upload & URL).
+     * Menyimpan resep baru ke database (mendukung Cloudinary HTTP API & URL).
      */
     public function store(Request $request)
     {
@@ -93,10 +93,27 @@ class RecipeController extends Controller
 
         $imagePath = 'https://upload.wikimedia.org/wikipedia/commons/2/23/Seblak_Bandung.jpg';
         if ($request->hasFile('image_file')) {
-            $uploadedFile = Cloudinary::upload($request->file('image_file')->getRealPath(), [
-                'folder' => 'sajirasa_recipes'
+            $file = $request->file('image_file');
+
+            $cloudName = env('CLOUDINARY_CLOUD_NAME');
+            $apiKey = env('CLOUDINARY_API_KEY');
+            $apiSecret = env('CLOUDINARY_API_SECRET');
+
+            $timestamp = time();
+            $signature = sha1("folder=sajirasa_recipes&timestamp={$timestamp}{$apiSecret}");
+
+            $response = Http::attach(
+                'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName()
+            )->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
+                'api_key' => $apiKey,
+                'timestamp' => $timestamp,
+                'folder' => 'sajirasa_recipes',
+                'signature' => $signature,
             ]);
-            $imagePath = $uploadedFile->getSecureUrl();
+
+            if ($response->successful()) {
+                $imagePath = $response->json('secure_url');
+            }
         } elseif ($request->filled('image_url')) {
             $imagePath = $request->image_url;
         }
@@ -160,10 +177,27 @@ class RecipeController extends Controller
 
         $imagePath = $recipe->image;
         if ($request->hasFile('image_file')) {
-            $uploadedFile = Cloudinary::upload($request->file('image_file')->getRealPath(), [
-                'folder' => 'sajirasa_recipes'
+            $file = $request->file('image_file');
+
+            $cloudName = env('CLOUDINARY_CLOUD_NAME');
+            $apiKey = env('CLOUDINARY_API_KEY');
+            $apiSecret = env('CLOUDINARY_API_SECRET');
+
+            $timestamp = time();
+            $signature = sha1("folder=sajirasa_recipes&timestamp={$timestamp}{$apiSecret}");
+
+            $response = Http::attach(
+                'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName()
+            )->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
+                'api_key' => $apiKey,
+                'timestamp' => $timestamp,
+                'folder' => 'sajirasa_recipes',
+                'signature' => $signature,
             ]);
-            $imagePath = $uploadedFile->getSecureUrl();
+
+            if ($response->successful()) {
+                $imagePath = $response->json('secure_url');
+            }
         } elseif ($request->filled('image_url')) {
             $imagePath = $request->image_url;
         }
