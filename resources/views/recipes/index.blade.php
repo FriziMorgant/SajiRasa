@@ -28,18 +28,37 @@
         }
 
         @keyframes fade-out {
-            from { opacity: 1; }
-            to { opacity: 0; }
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
         }
 
         @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes floatLogo {
-            0%, 100% { transform: translateY(0px) rotate(0deg); filter: drop-shadow(0 10px 20px rgba(249, 115, 22, 0.4)); }
-            50% { transform: translateY(-6px) rotate(1.5deg); filter: drop-shadow(0 15px 25px rgba(249, 115, 22, 0.6)); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+                filter: drop-shadow(0 10px 20px rgba(249, 115, 22, 0.4));
+            }
+
+            50% {
+                transform: translateY(-6px) rotate(1.5deg);
+                filter: drop-shadow(0 15px 25px rgba(249, 115, 22, 0.6));
+            }
         }
 
         .animate-float-logo {
@@ -47,8 +66,13 @@
         }
 
         @keyframes ultraShimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
         }
 
         .shimmer-loader-ultra {
@@ -70,81 +94,82 @@
     </div>
 
     <!-- NAVBAR UTAMA -->
+    <!-- NAVBAR UTAMA -->
     <header class="bg-stone-900/70 backdrop-blur-md border-b border-stone-800/80 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2">
 
             <!-- LOGO SAJIRASA DENGAN ANIMASI MELAYANG -->
-            <a href="{{ url('/') }}" class="flex items-center gap-3 cursor-pointer shrink-0 group">
+            <a href="{{ url('/') }}" class="flex items-center gap-2 sm:gap-3 cursor-pointer shrink-0 group">
                 <div
-                    class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-orange-50 p-1.5 border-2 border-orange-500/60 shadow-xl flex items-center justify-center shrink-0 animate-float-logo">
+                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-orange-50 p-1.5 border-2 border-orange-500/60 shadow-xl flex items-center justify-center shrink-0 animate-float-logo">
                     <img src="{{ asset('images/icons/logosajirasa.png') }}" alt="Logo SajiRasa"
                         class="w-full h-full object-contain">
                 </div>
                 <div class="flex flex-col justify-center">
                     <span
-                        class="text-lg sm:text-xl font-black tracking-tight text-stone-100 leading-none group-hover:text-orange-400 transition-colors">SajiRasa</span>
+                        class="text-base sm:text-xl font-black tracking-tight text-stone-100 leading-none group-hover:text-orange-400 transition-colors">SajiRasa</span>
                     <span
-                        class="text-[9px] sm:text-[10px] font-bold tracking-widest text-orange-400 uppercase mt-1">Dapur
+                        class="text-[8px] sm:text-[10px] font-bold tracking-widest text-orange-400 uppercase mt-1">Dapur
                         Rumahan</span>
                 </div>
             </a>
 
-            <!-- OTENTIKASI & MENU NAVBAR -->
-            <div class="flex items-center gap-3">
+            <!-- OTENTIKASI & MENU NAVBAR (RESPONSIF HP & DESKTOP) -->
+            <div class="flex items-center gap-1.5 sm:gap-3 overflow-x-auto py-2 scrollbar-none">
                 @auth
                     @if (in_array(Auth::user()->role, ['admin', 'penambah_resep']))
                         <a href="{{ route('recipes.my-recipes') }}"
-                            class="hidden md:flex items-center gap-2 px-4 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-xs font-bold transition-all border border-stone-700 shadow-sm">
+                            class="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-[11px] sm:text-xs font-bold transition-all border border-stone-700 shadow-sm whitespace-nowrap">
                             <img src="{{ asset('images/icons/recipe.png') }}" alt="Resep Saya"
-                                class="w-4 h-4 object-contain">
-                            <span>Resep Saya</span>
+                                class="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain">
+                            <span class="hidden xs:inline">Resep Saya</span>
                         </a>
 
                         <a href="{{ route('recipes.create') }}"
-                            class="hidden md:flex items-center gap-2 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold shadow-md transition-all">
+                            class="flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-[11px] sm:text-xs font-bold shadow-md transition-all whitespace-nowrap">
                             <img src="{{ asset('images/icons/foods.png') }}" alt="Kirim Resep"
-                                class="w-4 h-4 object-contain">
-                            <span>Kirim Resep</span>
+                                class="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain">
+                            <span>+ Kirim</span>
                         </a>
                     @endif
 
                     <!-- MENU FAVORIT SAYA DI NAVBAR -->
                     <a href="{{ route('favorites.index') }}"
-                        class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-xs font-bold transition-all border border-stone-700 shadow-sm">
-                        <img src="{{ asset('images/icons/heart.png') }}" alt="Favorit" class="w-4 h-4 object-contain">
-                        <span>Favorit</span>
+                        class="flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-[11px] sm:text-xs font-bold transition-all border border-stone-700 shadow-sm whitespace-nowrap">
+                        <img src="{{ asset('images/icons/heart.png') }}" alt="Favorit"
+                            class="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain">
+                        <span class="hidden xs:inline">Favorit</span>
                     </a>
 
                     <a href="{{ route('profile.index') }}"
-                        class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-stone-900/80 hover:bg-stone-800 rounded-xl border border-stone-800 transition-all">
+                        class="flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3 sm:py-1.5 bg-stone-900/80 hover:bg-stone-800 rounded-xl border border-stone-800 transition-all whitespace-nowrap">
                         @if (Auth::user()->avatar)
                             <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Avatar"
-                                class="w-6 h-6 rounded-full object-cover border border-orange-500/50">
+                                class="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-orange-500/50">
                         @else
                             <div
-                                class="w-6 h-6 rounded-full bg-stone-800 flex items-center justify-center border border-orange-500/50 text-[10px]">
+                                class="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-stone-800 flex items-center justify-center border border-orange-500/50 text-[10px]">
                                 👤</div>
                         @endif
-                        <span class="text-xs font-bold text-stone-300">{{ Auth::user()->name }}</span>
-                        <span class="text-[10px] font-extrabold px-2 py-0.5 bg-orange-600 text-white rounded-md uppercase">
-                            {{ str_replace('_', ' ', Auth::user()->role) }}
-                        </span>
+                        <span
+                            class="text-[11px] sm:text-xs font-bold text-stone-300 max-w-[80px] truncate">{{ Auth::user()->name }}</span>
                     </a>
 
-                    <form action="{{ route('logout') }}" method="POST">
+                    <form action="{{ route('logout') }}" method="POST" class="inline-flex">
                         @csrf
                         <button type="submit"
-                            class="flex items-center gap-1.5 px-3.5 py-2 bg-stone-800 hover:bg-rose-600 hover:text-white text-stone-300 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer">
+                            class="flex items-center gap-1 px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-stone-800 hover:bg-rose-600 hover:text-white text-stone-300 rounded-xl text-[11px] sm:text-xs font-bold transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                            title="Keluar">
                             <img src="{{ asset('images/icons/logout.png') }}" alt="Keluar"
-                                class="w-4 h-4 object-contain">
-                            <span>Keluar</span>
+                                class="w-3.5 h-3.5 sm:w-4 sm:h-4 object-contain">
+                            <span class="hidden md:inline">Keluar</span>
                         </button>
                     </form>
                 @else
                     <a href="{{ route('login') }}"
-                        class="text-xs font-bold text-stone-300 hover:text-orange-400 px-3 py-2 transition-colors">Masuk</a>
+                        class="text-xs font-bold text-stone-300 hover:text-orange-400 px-3 py-2 transition-colors whitespace-nowrap">Masuk</a>
                     <a href="{{ route('register') }}"
-                        class="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-orange-600/20 transition-all">Daftar</a>
+                        class="px-4 py-2 sm:px-5 sm:py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-orange-600/20 transition-all whitespace-nowrap">Daftar</a>
                 @endauth
             </div>
         </div>
@@ -334,7 +359,8 @@
                             </span>
                             <!-- VIEWS ICON MENGGUNAKAN VIEWS.PNG -->
                             <span class="flex items-center gap-1 text-stone-400 ml-auto">
-                                <img src="{{ asset('images/icons/views.png') }}" class="w-3.5 h-3.5 object-contain" alt="Views">
+                                <img src="{{ asset('images/icons/views.png') }}" class="w-3.5 h-3.5 object-contain"
+                                    alt="Views">
                                 {{ $recipe->views ?? 0 }}x
                             </span>
                         </div>
@@ -358,13 +384,13 @@
                                 <button type="submit"
                                     class="px-3 py-2 bg-stone-800/80 hover:bg-stone-700 hover:border-orange-500/50 text-stone-200 rounded-lg border border-stone-700/50 transition-all duration-300 flex items-center gap-1.5 cursor-pointer shadow-md transform hover:scale-105 active:scale-95"
                                     title="Favorit">
-                                    <img src="{{ asset('images/icons/heart.png') }}" alt="Heart" class="w-4 h-4 object-contain">
-                                    <span class="text-xs font-bold
-                                        @if(Auth::user()->favoriteRecipes && Auth::user()->favoriteRecipes->contains($recipe->id))
-                                            text-orange-400
+                                    <img src="{{ asset('images/icons/heart.png') }}" alt="Heart"
+                                        class="w-4 h-4 object-contain">
+                                    <span
+                                        class="text-xs font-bold
+                                        @if (Auth::user()->favoriteRecipes && Auth::user()->favoriteRecipes->contains($recipe->id)) text-orange-400
                                         @else
-                                            text-stone-300
-                                        @endif
+                                            text-stone-300 @endif
                                     ">Favorit</span>
                                 </button>
                             </form>
@@ -372,7 +398,8 @@
                             <a href="{{ route('login') }}"
                                 class="px-3 py-2 bg-stone-800/80 hover:bg-stone-700 text-stone-300 rounded-lg border border-stone-700/50 transition-all duration-300 flex items-center gap-1.5 shadow-md transform hover:scale-105 active:scale-95"
                                 title="Login untuk Favorit">
-                                <img src="{{ asset('images/icons/heart.png') }}" alt="Heart" class="w-4 h-4 object-contain">
+                                <img src="{{ asset('images/icons/heart.png') }}" alt="Heart"
+                                    class="w-4 h-4 object-contain">
                                 <span class="text-xs font-bold text-stone-300">Favorit</span>
                             </a>
                         @endauth

@@ -406,7 +406,12 @@
                         @endphp
 
                         @foreach ($ingredientsList as $item)
-                            @if (trim($item) != '')
+                            @php
+                                // Membersihkan sisa format array JSON/tanda kutip yang tersisa
+                                $cleanedItem = trim(str_replace(['["', '"]', '","', '"', '[\'', '\']'], '', $item));
+                            @endphp
+
+                            @if ($cleanedItem != '')
                                 <li
                                     class="flex items-start gap-3 p-2.5 rounded-xl hover:bg-stone-800/40 transition-colors">
                                     <input type="checkbox"
@@ -422,123 +427,124 @@
                                                     $matches[0] .
                                                     '</span>';
                                             },
-                                            e(trim($item, '"[]')),
+                                            e($cleanedItem),
                                         ) !!}
                                     </span>
                                 </li>
                             @endif
                         @endforeach
                     </ul>
+
                 </div>
 
-            </div>
+                <!-- KOLOM KANAN: LANGKAH MEMASAK -->
+                <div class="lg:col-span-7">
+                    <div
+                        class="bg-stone-900/70 backdrop-blur-xl border border-stone-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl print-card">
+                        <h3
+                            class="text-base font-extrabold text-stone-100 mb-6 pb-3 border-b border-stone-800 flex items-center gap-2">
+                            👨‍🍳 Langkah Demi Langkah Memasak
+                        </h3>
 
-            <!-- KOLOM KANAN: LANGKAH MEMASAK -->
-            <div class="lg:col-span-7">
-                <div
-                    class="bg-stone-900/70 backdrop-blur-xl border border-stone-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl print-card">
-                    <h3
-                        class="text-base font-extrabold text-stone-100 mb-6 pb-3 border-b border-stone-800 flex items-center gap-2">
-                        👨‍🍳 Langkah Demi Langkah Memasak
-                    </h3>
+                        <div class="space-y-6">
+                            @php
+                                $rawSteps = $recipe->steps ?? ($recipe->instructions ?? '');
+                                if (is_string($rawSteps) && str_starts_with(trim($rawSteps), '[')) {
+                                    $decodedSteps = json_decode($rawSteps, true);
+                                    $stepsList = is_array($decodedSteps) ? $decodedSteps : explode("\n", $rawSteps);
+                                } else {
+                                    $stepsList = explode("\n", str_replace("\r", '', $rawSteps));
+                                }
+                                $stepNum = 1;
+                            @endphp
 
-                    <div class="space-y-6">
-                        @php
-                            $rawSteps = $recipe->steps ?? ($recipe->instructions ?? '');
-                            if (is_string($rawSteps) && str_starts_with(trim($rawSteps), '[')) {
-                                $decodedSteps = json_decode($rawSteps, true);
-                                $stepsList = is_array($decodedSteps) ? $decodedSteps : explode("\n", $rawSteps);
-                            } else {
-                                $stepsList = explode("\n", str_replace("\r", '', $rawSteps));
-                            }
-                            $stepNum = 1;
-                        @endphp
-
-                        @foreach ($stepsList as $step)
-                            @if (trim($step) != '')
-                                <div
-                                    class="flex gap-4 group bg-stone-950/40 p-4 rounded-2xl border border-stone-800/60 hover:border-orange-500/40 transition-all">
+                            @foreach ($stepsList as $step)
+                                @if (trim($step) != '')
                                     <div
-                                        class="flex-shrink-0 w-8 h-8 rounded-xl bg-orange-950/80 border border-orange-800/60 text-orange-400 font-black text-xs flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        {{ $stepNum++ }}
+                                        class="flex gap-4 group bg-stone-950/40 p-4 rounded-2xl border border-stone-800/60 hover:border-orange-500/40 transition-all">
+                                        <div
+                                            class="flex-shrink-0 w-8 h-8 rounded-xl bg-orange-950/80 border border-orange-800/60 text-orange-400 font-black text-xs flex items-center justify-center group-hover:scale-110 transition-transform">
+                                            {{ $stepNum++ }}
+                                        </div>
+                                        <p class="text-xs sm:text-sm text-stone-200 leading-relaxed pt-1">
+                                            {{ trim($step, '"[]') }}
+                                        </p>
                                     </div>
-                                    <p class="text-xs sm:text-sm text-stone-200 leading-relaxed pt-1">
-                                        {{ trim($step, '"[]') }}
-                                    </p>
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- 3. ULASAN & PENILAIAN -->
-        <div
-            class="bg-stone-900/70 backdrop-blur-xl border border-stone-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl print-card no-print">
-            <h3
-                class="text-base font-extrabold text-stone-100 mb-6 pb-3 border-b border-stone-800 flex items-center gap-2">
-                💬 Ulasan & Penilaian Pengguna
-            </h3>
-
-            @auth
-                <form action="{{ route('reviews.store', $recipe->id) }}" method="POST"
-                    class="mb-8 bg-stone-950/60 p-5 rounded-2xl border border-stone-800 space-y-4">
-                    @csrf
-                    <div>
-                        <label class="block text-xs font-bold text-stone-300 mb-1">Berikan Rating Bintang</label>
-                        <select name="rating"
-                            class="w-full sm:w-48 px-3 py-2 bg-stone-900 border border-stone-800 rounded-xl text-stone-200 text-xs font-bold focus:outline-none focus:border-orange-500">
-                            <option value="5">⭐⭐⭐⭐⭐ (Sempurna)</option>
-                            <option value="4">⭐⭐⭐⭐ (Lezat)</option>
-                            <option value="3">⭐⭐⭐ (Cukup)</option>
-                            <option value="2">⭐⭐ (Kurang)</option>
-                            <option value="1">⭐ (Buruk)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-stone-300 mb-1">Tulis Komentar / Pengalaman
-                            Memasak</label>
-                        <textarea name="comment" rows="3" required
-                            placeholder="Bagikan kesan atau tips tambahan setelah mencoba resep ini..."
-                            class="w-full p-3 bg-stone-900 border border-stone-800 rounded-xl text-stone-200 text-xs focus:outline-none focus:border-orange-500"></textarea>
-                    </div>
-                    <button type="submit"
-                        class="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer">
-                        Kirim Ulasan
-                    </button>
-                </form>
-            @else
-                <div
-                    class="mb-8 p-4 bg-stone-950/60 border border-stone-800 rounded-2xl text-center text-xs text-stone-400">
-                    Silakan <a href="{{ route('login') }}" class="text-orange-400 font-bold underline">masuk</a> untuk
-                    ikut memberikan ulasan dan rating pada resep ini.
-                </div>
-            @endauth
-
-            <div class="space-y-4">
-                @if (isset($recipe->reviews) && count($recipe->reviews) > 0)
-                    @foreach ($recipe->reviews as $review)
-                        <div class="bg-stone-950/40 border border-stone-800/80 p-4 rounded-2xl space-y-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-stone-200">👤
-                                    {{ optional($review->user)->name ?? 'Pengguna' }}</span>
-                                <span class="text-xs text-orange-400 font-extrabold flex items-center gap-1">
-                                    <img src="{{ asset('images/icons/star.png') }}"
-                                        class="w-3.5 h-3.5 object-contain" alt="Rating">
-                                    {{ $review->rating }}/5
-                                </span>
-                            </div>
-                            <p class="text-xs text-stone-300 leading-relaxed">{{ $review->comment }}</p>
+                                @endif
+                            @endforeach
                         </div>
-                    @endforeach
-                @else
-                    <p class="text-xs text-stone-500 text-center py-4">Belum ada ulasan untuk resep ini. Jadilah yang
-                        pertama memberikan ulasan!</p>
-                @endif
+                    </div>
+                </div>
+
             </div>
-        </div>
+
+            <!-- 3. ULASAN & PENILAIAN -->
+            <div
+                class="bg-stone-900/70 backdrop-blur-xl border border-stone-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl print-card no-print">
+                <h3
+                    class="text-base font-extrabold text-stone-100 mb-6 pb-3 border-b border-stone-800 flex items-center gap-2">
+                    💬 Ulasan & Penilaian Pengguna
+                </h3>
+
+                @auth
+                    <form action="{{ route('reviews.store', $recipe->id) }}" method="POST"
+                        class="mb-8 bg-stone-950/60 p-5 rounded-2xl border border-stone-800 space-y-4">
+                        @csrf
+                        <div>
+                            <label class="block text-xs font-bold text-stone-300 mb-1">Berikan Rating Bintang</label>
+                            <select name="rating"
+                                class="w-full sm:w-48 px-3 py-2 bg-stone-900 border border-stone-800 rounded-xl text-stone-200 text-xs font-bold focus:outline-none focus:border-orange-500">
+                                <option value="5">⭐⭐⭐⭐⭐ (Sempurna)</option>
+                                <option value="4">⭐⭐⭐⭐ (Lezat)</option>
+                                <option value="3">⭐⭐⭐ (Cukup)</option>
+                                <option value="2">⭐⭐ (Kurang)</option>
+                                <option value="1">⭐ (Buruk)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-stone-300 mb-1">Tulis Komentar / Pengalaman
+                                Memasak</label>
+                            <textarea name="comment" rows="3" required
+                                placeholder="Bagikan kesan atau tips tambahan setelah mencoba resep ini..."
+                                class="w-full p-3 bg-stone-900 border border-stone-800 rounded-xl text-stone-200 text-xs focus:outline-none focus:border-orange-500"></textarea>
+                        </div>
+                        <button type="submit"
+                            class="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer">
+                            Kirim Ulasan
+                        </button>
+                    </form>
+                @else
+                    <div
+                        class="mb-8 p-4 bg-stone-950/60 border border-stone-800 rounded-2xl text-center text-xs text-stone-400">
+                        Silakan <a href="{{ route('login') }}" class="text-orange-400 font-bold underline">masuk</a>
+                        untuk
+                        ikut memberikan ulasan dan rating pada resep ini.
+                    </div>
+                @endauth
+
+                <div class="space-y-4">
+                    @if (isset($recipe->reviews) && count($recipe->reviews) > 0)
+                        @foreach ($recipe->reviews as $review)
+                            <div class="bg-stone-950/40 border border-stone-800/80 p-4 rounded-2xl space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-stone-200">👤
+                                        {{ optional($review->user)->name ?? 'Pengguna' }}</span>
+                                    <span class="text-xs text-orange-400 font-extrabold flex items-center gap-1">
+                                        <img src="{{ asset('images/icons/star.png') }}"
+                                            class="w-3.5 h-3.5 object-contain" alt="Rating">
+                                        {{ $review->rating }}/5
+                                    </span>
+                                </div>
+                                <p class="text-xs text-stone-300 leading-relaxed">{{ $review->comment }}</p>
+                            </div>
+                        @endforeach
+                    @else
+                        <p class="text-xs text-stone-500 text-center py-4">Belum ada ulasan untuk resep ini. Jadilah
+                            yang
+                            pertama memberikan ulasan!</p>
+                    @endif
+                </div>
+            </div>
 
     </main>
 
