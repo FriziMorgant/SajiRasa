@@ -187,15 +187,15 @@
                     </div>
 
                     @php
-                        $imgSource = $recipe->image;
+                        $imgSource = $recipe->image ?? '';
+                        // Pastikan mengecek apakah string benar-benar URL http/https
                         $finalImageUrl = filter_var($imgSource, FILTER_VALIDATE_URL)
                             ? $imgSource
-                            : asset('storage/' . $imgSource);
+                            : 'https://upload.wikimedia.org/wikipedia/commons/2/23/Seblak_Bandung.jpg';
                     @endphp
 
                     <img src="{{ $finalImageUrl }}" alt="{{ $recipe->title }}"
-                        onload="removeSkeleton('skeleton-detail-img', this)"
-                        class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700 opacity-0">
+                        class="w-full h-full object-cover group-hover:scale-105 transition-all duration-700">
 
                     <span
                         class="absolute top-4 left-4 px-3.5 py-1.5 bg-stone-950/80 backdrop-blur-md rounded-xl text-xs font-bold text-orange-300 border border-stone-800 shadow-lg z-10">
