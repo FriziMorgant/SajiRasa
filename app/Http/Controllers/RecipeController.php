@@ -6,7 +6,6 @@ use App\Models\Recipe;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 
 class RecipeController extends Controller
@@ -119,14 +118,18 @@ class RecipeController extends Controller
             $imagePath = $request->image_url;
         }
 
+        // Mengubah string ingredients dan steps menjadi format JSON yang aman untuk database PostgreSQL
+        $ingredientsFormatted = json_encode(array_values(array_filter(explode("\n", str_replace("\r", "", $request->ingredients)))));
+        $stepsFormatted = json_encode(array_values(array_filter(explode("\n", str_replace("\r", "", $request->steps)))));
+
         Recipe::create([
             'title'        => $request->title,
             'slug'         => \Illuminate\Support\Str::slug($request->title),
             'category_id'  => $request->category_id,
             'user_id'      => Auth::id() ?? 1,
             'description'  => $request->description,
-            'ingredients'  => $request->ingredients,
-            'steps'        => $request->steps,
+            'ingredients'  => $ingredientsFormatted,
+            'steps'        => $stepsFormatted,
             'cooking_time' => $request->cooking_time,
             'servings'     => $request->servings,
             'difficulty'   => $request->difficulty,
@@ -203,13 +206,16 @@ class RecipeController extends Controller
             $imagePath = $request->image_url;
         }
 
+        $ingredientsFormatted = json_encode(array_values(array_filter(explode("\n", str_replace("\r", "", $request->ingredients)))));
+        $stepsFormatted = json_encode(array_values(array_filter(explode("\n", str_replace("\r", "", $request->steps)))));
+
         $recipe->update([
             'title'        => $request->title,
             'slug'         => \Illuminate\Support\Str::slug($request->title),
             'category_id'  => $request->category_id,
             'description'  => $request->description,
-            'ingredients'  => $request->ingredients,
-            'steps'        => $request->steps,
+            'ingredients'  => $ingredientsFormatted,
+            'steps'        => $stepsFormatted,
             'cooking_time' => $request->cooking_time,
             'servings'     => $request->servings,
             'difficulty'   => $request->difficulty,
