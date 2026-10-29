@@ -93,9 +93,8 @@ class RecipeController extends Controller
         // Logika penentuan gambar (Upload ke Cloudinary, pakai URL, atau fallback default)
         $imagePath = 'https://upload.wikimedia.org/wikipedia/commons/2/23/Seblak_Bandung.jpg';
         if ($request->hasFile('image_file')) {
-            // Mengirim file langsung ke Cloudinary
-            $uploadedFileUrl = $request->file('image_file')->storeOnCloudinary('sajirasa_recipes');
-            $imagePath = $uploadedFileUrl->getSecureUrl();
+            $path = $request->file('image_file')->store('sajirasa_recipes', 'cloudinary');
+            $imagePath = Storage::disk('cloudinary')->url($path);
         } elseif ($request->filled('image_url')) {
             $imagePath = $request->image_url;
         }
@@ -159,9 +158,8 @@ class RecipeController extends Controller
 
         $imagePath = $recipe->image;
         if ($request->hasFile('image_file')) {
-            // Upload file gambar baru ke Cloudinary
-            $uploadedFileUrl = $request->file('image_file')->storeOnCloudinary('sajirasa_recipes');
-            $imagePath = $uploadedFileUrl->getSecureUrl();
+            $path = $request->file('image_file')->store('sajirasa_recipes', 'cloudinary');
+            $imagePath = Storage::disk('cloudinary')->url($path);
         } elseif ($request->filled('image_url')) {
             $imagePath = $request->image_url;
         }
