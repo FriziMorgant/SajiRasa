@@ -141,7 +141,7 @@ class RecipeController extends Controller
     }
 
     /**
-     * Menampilkan form edit resep.
+     * Menampilkan form edit resep dengan pembersihan format JSON agar bersih di textarea.
      */
     public function edit($id)
     {
@@ -150,6 +150,22 @@ class RecipeController extends Controller
         if (Auth::user()->role !== 'admin' && Auth::id() !== $recipe->user_id) {
             return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengedit resep ini.');
         }
+
+        // Membersihkan format JSON mentah pada ingredients agar tampil rapi baris per baris di textarea
+        $ingredients = $recipe->ingredients;
+        if (is_string($ingredients) && str_starts_with(trim($ingredients), '[')) {
+            $decoded = json_decode($ingredients, true);
+            $recipe->ingredients = is_array($decoded) ? implode("\n", $decoded) : $ingredients;
+        }
+        $recipe->ingredients = str_replace(['["', '"]', '","', '"', '[\'', '\']'], '', $recipe->ingredients);
+
+        // Membersihkan format JSON mentah pada steps agar tampil rapi baris per baris di textarea
+        $steps = $recipe->steps;
+        if (is_string($steps) && str_starts_with(trim($steps), '[')) {
+            $decodedSteps = json_decode($steps, true);
+            $recipe->steps = is_array($decodedSteps) ? implode("\n", $decodedSteps) : $steps;
+        }
+        $recipe->steps = str_replace(['["', '"]', '","', '"', '[\'', '\']'], '', $recipe->steps);
 
         $categories = Category::all();
         return view('recipes.edit', compact('recipe', 'categories'));
