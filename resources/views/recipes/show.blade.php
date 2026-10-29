@@ -478,9 +478,9 @@
 
             </div>
 
-            <!-- 3. ULASAN & PENILAIAN -->
+            <!-- 3. ULASAN & PENILAIAN PENGGUNA (Ditaruh penuh di bawah grid agar rapi) -->
             <div
-                class="bg-stone-900/70 backdrop-blur-xl border border-stone-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl print-card no-print">
+                class="bg-stone-900/70 backdrop-blur-xl border border-stone-800/80 rounded-3xl p-6 sm:p-8 shadow-2xl print-card no-print mt-8">
                 <h3
                     class="text-base font-extrabold text-stone-100 mb-6 pb-3 border-b border-stone-800 flex items-center gap-2">
                     💬 Ulasan & Penilaian Pengguna
@@ -517,8 +517,7 @@
                     <div
                         class="mb-8 p-4 bg-stone-950/60 border border-stone-800 rounded-2xl text-center text-xs text-stone-400">
                         Silakan <a href="{{ route('login') }}" class="text-orange-400 font-bold underline">masuk</a>
-                        untuk
-                        ikut memberikan ulasan dan rating pada resep ini.
+                        untuk ikut memberikan ulasan dan rating pada resep ini.
                     </div>
                 @endauth
 
@@ -540,8 +539,7 @@
                         @endforeach
                     @else
                         <p class="text-xs text-stone-500 text-center py-4">Belum ada ulasan untuk resep ini. Jadilah
-                            yang
-                            pertama memberikan ulasan!</p>
+                            yang pertama memberikan ulasan!</p>
                     @endif
                 </div>
             </div>
