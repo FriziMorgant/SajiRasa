@@ -96,55 +96,59 @@
     <!-- NAVBAR UTAMA -->
     <!-- NAVBAR UTAMA -->
     <!-- NAVBAR UTAMA -->
-    <header class="bg-stone-900/80 backdrop-blur-xl border-b border-stone-800/80 sticky top-0 z-50 shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+    <header class="bg-stone-900/90 backdrop-blur-xl border-b border-stone-800/80 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3">
 
             <!-- LOGO SAJIRASA -->
-            <a href="{{ url('/') }}" class="flex items-center gap-3 cursor-pointer shrink-0 group">
+            <a href="{{ url('/') }}" class="flex items-center gap-2.5 cursor-pointer shrink-0 group">
                 <div
-                    class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-orange-50 p-1.5 border-2 border-orange-500/60 shadow-xl flex items-center justify-center shrink-0 animate-float-logo">
+                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl overflow-hidden bg-gradient-to-br from-white to-orange-50 p-1.5 border-2 border-orange-500/60 shadow-xl flex items-center justify-center shrink-0 animate-float-logo">
                     <img src="{{ asset('images/icons/logosajirasa.png') }}" alt="Logo SajiRasa"
                         class="w-full h-full object-contain">
                 </div>
                 <div class="flex flex-col justify-center">
                     <span
-                        class="text-lg sm:text-xl font-black tracking-tight text-stone-100 leading-none group-hover:text-orange-400 transition-colors">SajiRasa</span>
+                        class="text-base sm:text-xl font-black tracking-tight text-stone-100 leading-none group-hover:text-orange-400 transition-colors">SajiRasa</span>
                     <span
-                        class="text-[9px] sm:text-[10px] font-bold tracking-widest text-orange-400 uppercase mt-1">Dapur
+                        class="text-[8px] sm:text-[10px] font-bold tracking-widest text-orange-400 uppercase mt-1">Dapur
                         Rumahan</span>
                 </div>
             </a>
 
-            <!-- MENU NAVigasi & AKUN (RESPONSIF SEMUA DEVICE) -->
-            <div class="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
+            <!-- MENU NAVIGASI & AKUN -->
+            <div class="flex items-center gap-1.5 sm:gap-2.5">
                 @auth
                     @if (in_array(Auth::user()->role, ['admin', 'penambah_resep']))
+                        <!-- Resep Saya (Tampil di Tablet/PC, di HP jadi ikon) -->
                         <a href="{{ route('recipes.my-recipes') }}"
-                            class="hidden md:flex items-center gap-1.5 px-3.5 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-xs font-bold transition-all border border-stone-700 shadow-sm whitespace-nowrap">
+                            class="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-xs font-bold transition-all border border-stone-700 shadow-sm whitespace-nowrap"
+                            title="Resep Saya">
                             <img src="{{ asset('images/icons/recipe.png') }}" alt="Resep Saya"
                                 class="w-4 h-4 object-contain">
-                            <span>Resep Saya</span>
+                            <span class="hidden md:inline">Resep Saya</span>
                         </a>
 
+                        <!-- Kirim Resep -->
                         <a href="{{ route('recipes.create') }}"
-                            class="flex items-center gap-1.5 px-3.5 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold shadow-md transition-all whitespace-nowrap">
+                            class="flex items-center gap-1.5 px-3 sm:px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold shadow-md transition-all whitespace-nowrap">
                             <img src="{{ asset('images/icons/foods.png') }}" alt="Kirim Resep"
                                 class="w-4 h-4 object-contain">
-                            <span>+ Kirim Resep</span>
+                            <span><span class="hidden sm:inline">+ </span>Kirim<span class="hidden lg:inline">
+                                    Resep</span></span>
                         </a>
                     @endif
 
-                    <!-- FAVORIT -->
+                    <!-- Favorit -->
                     <a href="{{ route('favorites.index') }}"
-                        class="flex items-center gap-1.5 px-3 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-xs font-bold transition-all border border-stone-700 shadow-sm whitespace-nowrap"
+                        class="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-stone-800 hover:bg-stone-700 text-stone-200 rounded-xl text-xs font-bold transition-all border border-stone-700 shadow-sm whitespace-nowrap"
                         title="Favorit">
                         <img src="{{ asset('images/icons/heart.png') }}" alt="Favorit" class="w-4 h-4 object-contain">
                         <span class="hidden sm:inline">Favorit</span>
                     </a>
 
-                    <!-- PROFIL PENGGUNA -->
+                    <!-- Profil Pengguna (Hanya tampil di layar menengah ke atas) -->
                     <a href="{{ route('profile.index') }}"
-                        class="hidden lg:flex items-center gap-2 px-3.5 py-1.5 bg-stone-900/90 hover:bg-stone-800 rounded-xl border border-stone-800 transition-all whitespace-nowrap">
+                        class="hidden xl:flex items-center gap-2 px-3.5 py-1.5 bg-stone-900/90 hover:bg-stone-800 rounded-xl border border-stone-800 transition-all whitespace-nowrap">
                         @if (Auth::user()->avatar)
                             <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Avatar"
                                 class="w-6 h-6 rounded-full object-cover border border-orange-500/50">
@@ -160,11 +164,11 @@
                         </span>
                     </a>
 
-                    <!-- TOMBOL KELUAR -->
+                    <!-- Tombol Keluar -->
                     <form action="{{ route('logout') }}" method="POST" class="inline-flex">
                         @csrf
                         <button type="submit"
-                            class="flex items-center gap-1.5 px-3 py-2 bg-stone-800 hover:bg-rose-600 hover:text-white text-stone-300 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer whitespace-nowrap"
+                            class="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 bg-stone-800 hover:bg-rose-600 hover:text-white text-stone-300 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer whitespace-nowrap"
                             title="Keluar">
                             <img src="{{ asset('images/icons/logout.png') }}" alt="Keluar"
                                 class="w-4 h-4 object-contain">
@@ -175,7 +179,7 @@
                     <a href="{{ route('login') }}"
                         class="text-xs font-bold text-stone-300 hover:text-orange-400 px-3 py-2 transition-colors">Masuk</a>
                     <a href="{{ route('register') }}"
-                        class="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-orange-600/20 transition-all">Daftar</a>
+                        class="px-4 sm:px-5 py-2 sm:py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-orange-600/20 transition-all">Daftar</a>
                 @endauth
             </div>
         </div>
